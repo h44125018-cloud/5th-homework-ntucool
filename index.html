@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f8f1e5">
+<title>呆一布 AI｜車輪餅線上點餐</title>
+<style>
+:root{
+  --cream:#fbf6ec;--paper:#fffdf8;--brown:#5b3b2a;--caramel:#bd8150;
+  --caramel-dark:#925a35;--peach:#f4dfc7;--line:#eadbc8;--muted:#8a7869;
+  --green:#587a58;--red:#b34e42;--shadow:0 10px 28px rgba(91,59,42,.09);
+  --radius:20px
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--brown);font-family:ui-rounded,"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.48}
+a{color:var(--caramel-dark)}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(251,246,236,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1120px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.03em}
+.brand-mark{width:42px;height:42px;border-radius:15px;background:var(--peach);display:grid;place-items:center;font-size:24px}
+.brand small{display:block;font-weight:600;color:var(--muted);font-size:11px;letter-spacing:.08em}
+.nav-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:13px;padding:11px 15px;font-weight:800;transition:.15s}
+.btn-primary{background:var(--brown);color:#fff9f0}
+.btn-primary:hover{background:#422719}
+.btn-soft{background:#f1e2d0;color:var(--brown)}
+.btn-outline{background:transparent;border:1px solid var(--line);color:var(--brown)}
+.btn-danger{background:#f7e2de;color:var(--red)}
+.btn-small{padding:7px 10px;font-size:13px;border-radius:10px}
+.container{max-width:1120px;margin:0 auto;padding:26px 20px 110px}
+.hero{background:linear-gradient(125deg,#f5e3cc,#fff9ed 70%);border:1px solid #efdfcb;border-radius:28px;padding:28px;display:grid;grid-template-columns:1.35fr .65fr;align-items:center;gap:20px;box-shadow:var(--shadow);overflow:hidden}
+.eyebrow{font-size:12px;font-weight:900;letter-spacing:.15em;color:var(--caramel-dark)}
+h1{font-size:clamp(28px,4vw,43px);line-height:1.18;margin:9px 0 12px}
+.hero p{color:#786453;line-height:1.8;margin:0;max-width:560px}
+.hero-art{font-size:clamp(80px,12vw,130px);text-align:center;filter:drop-shadow(0 12px 8px #b8834b30)}
+.notice{margin:18px 0;padding:13px 16px;border-radius:14px;background:#fff4d9;border:1px solid #efd9a9;color:#75552c;line-height:1.6;font-size:14px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:32px 0 16px}
+.section-head h2{margin:0;font-size:24px}
+.section-head p{margin:5px 0 0;color:var(--muted);font-size:14px}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.product-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:0 5px 18px rgba(91,59,42,.04);display:flex;flex-direction:column;min-width:0}
+.product-art{height:150px;border-radius:15px;background:linear-gradient(145deg,#f7e8d5,#fff7e9);display:grid;place-items:center;position:relative;overflow:hidden}
+.product-art:before,.product-art:after{content:"";position:absolute;border-radius:50%;background:#ffffff55}
+.product-art:before{width:140px;height:140px;top:-65px;right:-25px}
+.product-art:after{width:90px;height:90px;bottom:-45px;left:-20px}
+.product-emoji{font-size:76px;z-index:1;filter:drop-shadow(0 7px 3px #80542d20)}
+.sold-tag{position:absolute;z-index:2;top:9px;right:9px;background:#6c5548;color:white;border-radius:9px;padding:5px 8px;font-size:12px;font-weight:800}
+.product-card h3{margin:13px 0 4px;font-size:19px}
+.product-desc{color:var(--muted);font-size:13px;min-height:20px}
+.product-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:14px}
+.price{font-size:18px;font-weight:900}
+.price.pending{font-size:13px;color:var(--muted)}
+.qty-pill{display:flex;align-items:center;gap:9px}
+.qty-pill button,.qty-control button{width:32px;height:32px;border:1px solid var(--line);background:#fff8ef;border-radius:10px;font-weight:900;color:var(--brown)}
+.cart-fab{position:fixed;z-index:25;bottom:18px;left:50%;transform:translateX(-50%);border:0;background:var(--brown);color:white;border-radius:17px;padding:13px 20px;min-width:min(92vw,430px);box-shadow:0 10px 30px #44271938;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:900}
+.cart-fab small{display:block;font-weight:500;color:#efddca}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.panel h2,.panel h3{margin-top:0}
+.hidden{display:none!important}
+.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.field label{font-weight:800;font-size:14px}
+.field input,.field select,.field textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fffefa;color:var(--brown);outline:none}
+.field input:focus,.field select:focus{border-color:var(--caramel);box-shadow:0 0 0 3px #bd815022}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+.cart-line{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.cart-line:last-child{border-bottom:0}
+.cart-name{font-weight:900}.cart-sub{color:var(--muted);font-size:13px;margin-top:3px}
+.qty-control{display:flex;align-items:center;gap:8px}
+.total-line{display:flex;justify-content:space-between;padding:14px 0;font-size:18px;font-weight:900}
+.muted{color:var(--muted)}.small{font-size:13px}.status{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#f4e6d6;font-size:12px;font-weight:900}
+.status.green{background:#e3efe0;color:#38613c}.status.red{background:#f8e0dc;color:#9b4137}.status.yellow{background:#fff0c7;color:#805d18}
+.page-title{margin:6px 0 18px;font-size:28px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.tab{border:1px solid var(--line);background:#fffaf2;color:var(--brown);padding:9px 13px;border-radius:12px;font-weight:800}
+.tab.active{background:var(--brown);color:white;border-color:var(--brown)}
+.order-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.order-card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.order-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.order-number{font-size:18px;font-weight:950;overflow-wrap:anywhere}
+.order-items{line-height:1.8;margin:12px 0;color:#725d4d}
+.order-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric{padding:16px;border-radius:16px;background:#fff7e9;border:1px solid var(--line)}
+.metric span{display:block;color:var(--muted);font-size:13px}.metric strong{display:block;font-size:24px;margin-top:7px;overflow-wrap:anywhere}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:540px}
+th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:14px}
+th{color:var(--muted);font-weight:800}
+.toast{position:fixed;top:82px;left:50%;transform:translateX(-50%);z-index:60;background:var(--brown);color:white;padding:13px 18px;border-radius:14px;box-shadow:var(--shadow);max-width:90vw}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin:36px 0 0}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:760px){
+ .hero{grid-template-columns:1fr;padding:23px}.hero-art{display:none}
+ .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+ .product-art{height:120px}.product-emoji{font-size:62px}
+ .product-card{padding:10px}.product-card h3{font-size:17px}
+ .order-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .container{padding:18px 13px 105px}.topbar-inner{padding:10px 13px}
+ .brand-mark{width:36px;height:36px}.nav-actions .btn{padding:9px 10px;font-size:13px}
+ .cart-line{grid-template-columns:1fr auto}.cart-line .line-subtotal{grid-column:1/-1;text-align:right}
+}
+@media(max-width:380px){.product-grid{grid-template-columns:1fr}.product-art{height:155px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="brand-mark">🥮</div><div>呆一布 AI<small>車輪餅・暖心現烤</small></div></div>
+    <div class="nav-actions">
+      <button class="btn btn-soft" id="navLookup">查詢訂單</button>
+      <button class="btn btn-outline" id="navAdmin">店家後台</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section id="customerPage">
+    <div class="hero">
+      <div><div class="eyebrow">FRESHLY MADE WITH LOVE</div><h1>今天，來顆暖呼呼的車輪餅吧！</h1><p>挑選喜歡的口味，送出訂單後請至櫃檯以現金付款。店家確認收款後，就會開始準備你的點心。</p></div>
+      <div class="hero-art" aria-hidden="true">🥮</div>
+    </div>
+    <div id="connectionNotice" class="notice">離線單機模式：訂單只保存在目前這台裝置的瀏覽器中。請定期匯出備份；不同手機或電腦之間不會自動同步。</div>
+    <div class="section-head"><div><h2>今日口味</h2><p>選一份喜歡的，讓今天甜一點。</p></div><span class="status">共 5 種口味</span></div>
+    <div id="productGrid" class="product-grid"></div>
+    <div class="footer">呆一布 AI · 請於櫃檯完成現金付款後等候製作</div>
+  </section>
+
+  <section id="lookupPage" class="hidden">
+    <button class="btn btn-outline btn-small" data-back>← 返回點餐</button>
+    <h1 class="page-title">查詢訂單</h1>
+    <div class="panel">
+      <p class="muted">請輸入訂單編號及下單時填寫的完整電話號碼，以查詢訂單狀態。</p>
+      <div class="field"><label for="lookupOrderId">訂單編號</label><input id="lookupOrderId" placeholder="例如：1020-003（789）" autocomplete="off"></div>
+      <div class="field"><label for="lookupPhone">完整電話號碼</label><input id="lookupPhone" inputmode="tel" placeholder="輸入下單時的電話號碼" autocomplete="tel"></div>
+      <button id="lookupSubmit" class="btn btn-primary">查詢訂單</button>
+    </div>
+    <div id="lookupResult"></div>
+  </section>
+
+  <section id="adminLoginPage" class="hidden">
+    <button class="btn btn-outline btn-small" data-back>← 返回點餐</button>
+    <h1 class="page-title">店家管理後台</h1>
+    <div class="panel" style="max-width:480px;margin:auto">
+      <h2>管理者登入</h2><p class="muted small">單機離線版登入。提醒：純 HTML 登入只能限制一般介面操作，不能提供真正的安全防護。</p>
+      <div class="field"><label for="adminEmail">管理者 ID</label><input id="adminEmail" type="text" autocomplete="username" placeholder="輸入管理者 ID"></div>
+      <div class="field"><label for="adminPassword">密碼</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="輸入密碼"></div>
+      <button id="loginButton" class="btn btn-primary" style="width:100%">登入</button>
+      <p class="small muted" id="loginHint">管理者 ID 與密碼已設定。請勿將此檔案公開給不應管理訂單的人。</p>
+    </div>
+  </section>
+
+  <section id="adminPage" class="hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:16px">
+      <div><div class="eyebrow">STAFF CONSOLE</div><h1 class="page-title" style="margin-bottom:0">店家管理後台</h1><div class="muted small" id="adminIdentity"></div></div>
+      <button id="logoutButton" class="btn btn-outline">登出</button>
+    </div>
+    <div class="tabs" id="adminTabs">
+      <button class="tab active" data-tab="orders">訂單管理</button>
+      <button class="tab" data-tab="board">製作看板</button>
+      <button class="tab" data-tab="products">商品管理</button>
+      <button class="tab" data-tab="reports">每日報表</button>
+    </div>
+    <div id="adminOrders" class="admin-section">
+      <div class="panel">
+        <div class="row"><div><h2 style="margin-bottom:4px">訂單列表</h2><div class="muted small">依成立時間由早到晚排序</div></div><button class="btn btn-soft" id="refreshOrders">重新整理</button></div>
+        <div class="field"><label for="orderSearch">搜尋訂單編號或電話</label><input id="orderSearch" placeholder="輸入訂單編號或電話號碼"></div>
+        <div class="tabs" id="orderFilter">
+          <button class="tab active" data-filter="unpaid">未付款</button>
+          <button class="tab" data-filter="paid">已付款／製作中</button>
+          <button class="tab" data-filter="all">全部訂單</button>
+        </div>
+        <div id="ordersList" class="order-grid"></div>
+        <hr>
+        <h3>本機資料備份與還原</h3>
+        <p class="muted small">備份包含訂單與商品供應狀態。請妥善保管備份檔，因為檔案內可能包含顧客電話號碼。</p>
+        <div class="row">
+          <button class="btn btn-soft" id="backupData">下載 JSON 備份</button>
+          <label class="btn btn-outline" for="restoreFile" style="text-align:center;cursor:pointer">匯入 JSON 備份</label>
+          <input id="restoreFile" type="file" accept="application/json,.json" class="hidden">
+        </div>
+      </div>
+    </div>
+    <div id="adminBoard" class="admin-section hidden">
+      <div class="panel"><h2>製作看板</h2><p class="muted small">只顯示已付款、尚未完成且未取消的訂單。</p><div id="productionBoard" class="order-grid"></div></div>
+    </div>
+    <div id="adminProducts" class="admin-section hidden">
+      <div class="panel"><h2>商品供應管理</h2><p class="muted small">每種口味售價 NT$25，可切換售完／恢復供應。變更會保存在本機瀏覽器。</p><div id="adminProductList"></div></div>
+    </div>
+    <div id="adminReports" class="admin-section hidden">
+      <div class="panel"><div class="row"><div><h2>每日營業報表</h2><p class="muted small">以台灣時間計算營業日；實際收款僅計入已確認收款的訂單。</p></div><button id="exportCsv" class="btn btn-primary">匯出 CSV</button></div>
+        <div class="field"><label for="reportDate">報表日期</label><input id="reportDate" type="date"></div>
+        <div id="reportMetrics" class="metrics"></div><hr><h3>各口味銷售數量</h3><div id="flavorReport"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<button id="cartFab" class="cart-fab" type="button"><span>🛒 查看購物車 <small id="cartCount">0 件商品</small></span><span id="cartTotal">金額待設定</span></button>
+
+<div id="cartModal" class="hidden" style="position:fixed;inset:0;z-index:40;background:#38271d66;display:flex;align-items:flex-end;justify-content:center">
+  <div style="width:min(100%,650px);max-height:88vh;overflow:auto;background:var(--cream);border-radius:24px 24px 0 0;padding:22px 20px 30px">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">你的購物車</h2><button id="closeCart" class="btn btn-outline btn-small">關閉 ✕</button></div>
+    <div id="cartLines" style="margin-top:12px"></div>
+    <div class="total-line"><span>訂單總金額</span><span id="cartModalTotal">待設定</span></div>
+    <div class="notice">付款方式：櫃檯現金。請於店家確認收款後再開始製作。</div>
+    <div class="field"><label for="customerPhone">聯絡電話（必填）</label><input id="customerPhone" inputmode="tel" autocomplete="tel" placeholder="請輸入電話號碼"></div>
+    <button id="submitOrder" class="btn btn-primary" style="width:100%">確認送出訂單</button>
+    <p class="small muted">送出前請確認口味、數量及電話號碼。訂單成立後無法直接修改內容。</p>
+  </div>
+</div>
+
+<div id="orderSuccessModal" class="hidden" style="position:fixed;inset:0;z-index:45;background:#38271d66;display:flex;align-items:center;justify-content:center;padding:18px">
+  <div class="panel" style="width:min(100%,480px);text-align:center">
+    <div style="font-size:50px">🌼</div><h2>訂單已成立！</h2><p class="muted">請記下訂單編號，並至櫃檯以現金付款。</p>
+    <div id="successOrderNumber" style="font-size:24px;font-weight:950;margin:18px 0;overflow-wrap:anywhere"></div>
+    <div id="successOrderDetail" class="muted" style="line-height:1.8"></div>
+    <div class="notice">目前狀態：尚未付款。店家確認收款後才會開始製作。</div>
+    <button id="successClose" class="btn btn-primary" style="width:100%">完成</button>
+  </div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<!-- 單一 HTML 離線版：使用本機 LocalStorage，不連接雲端。 -->
+<script>
+/*
+  離線單機版說明：
+  - 訂單及商品狀態儲存在目前瀏覽器的 LocalStorage。
+  - 不同裝置不會同步；清除瀏覽器資料可能導致資料遺失。
+  - 管理者登入是前端介面限制，不是安全的帳號驗證。
+*/
+const ADMIN_ID = "h44125018";
+const ADMIN_PASSWORD = "h44125018";
+const STORAGE_KEY = "daiyibu_offline_orders_v1";
+const PRODUCTS_KEY = "daiyibu_offline_products_v1";
+const SESSION_KEY = "daiyibu_offline_admin_session";
+
+const DEFAULT_PRODUCTS = [
+ {id:"P001",name:"奶油",price:25,is_available:true,emoji:"🥮",description:"香濃滑順的經典奶油餡"},
+ {id:"P002",name:"紅豆",price:25,is_available:true,emoji:"🫘",description:"綿密香甜的紅豆內餡"},
+ {id:"P003",name:"芋頭",price:25,is_available:true,emoji:"🍠",description:"芋香濃郁、口感綿密"},
+ {id:"P004",name:"小肉豆",price:25,is_available:true,emoji:"🥟",description:"鹹香風味，滿足不同口味"},
+ {id:"P005",name:"起司馬鈴薯",price:25,is_available:true,emoji:"🧀",description:"起司與馬鈴薯的濃郁組合"}
+];
+const $ = id => document.getElementById(id);
+const state = {
+ products: loadProductsFromStorage(),
+ cart:{}, orders:loadOrdersFromStorage(), user:sessionStorage.getItem(SESSION_KEY)==="1"?{id:ADMIN_ID}:null,
+ filter:"unpaid",adminTab:"orders",soundEnabled:true,lastOrderCount:0
+};
+let toastTimer=null,audioCtx=null;
+const fmt = n => n == null ? "待設定" : "NT$ " + Number(n).toLocaleString("zh-TW");
+const escapeHtml = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const taipeiDate = (d=new Date()) => new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+function loadOrdersFromStorage(){try{const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}}
+function loadProductsFromStorage(){try{const v=JSON.parse(localStorage.getItem(PRODUCTS_KEY)||"null");return Array.isArray(v)&&v.length?v:DEFAULT_PRODUCTS.map(p=>({...p}))}catch(e){return DEFAULT_PRODUCTS.map(p=>({...p}))}}
+function saveOrders(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state.orders))}
+function saveProducts(){localStorage.setItem(PRODUCTS_KEY,JSON.stringify(state.products))}
+function showToast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),3200)}
+function showPage(id){["customerPage","lookupPage","adminLoginPage","adminPage"].forEach(x=>$(x).classList.toggle("hidden",x!==id));$("cartFab").classList.toggle("hidden",id!=="customerPage");window.scrollTo({top:0,behavior:"smooth"})}
+function moneyReady(p){return Number.isFinite(Number(p?.price))&&p?.price!==null&&Number(p.price)>=0}
+function cartQty(){return Object.values(state.cart).reduce((a,b)=>a+b,0)}
+function cartAmount(){return Object.entries(state.cart).reduce((sum,[id,q])=>{const p=state.products.find(x=>x.id===id);return sum+(p&&moneyReady(p)?Number(p.price)*q:0)},0)}
+function renderProducts(){
+ $("productGrid").innerHTML=state.products.map(p=>`
+  <article class="product-card"><div class="product-art"><span class="product-emoji">${p.emoji||"🥮"}</span>${!p.is_available?'<span class="sold-tag">今日售完</span>':""}</div>
+   <h3>${escapeHtml(p.name)}</h3><div class="product-desc">${escapeHtml(p.description||"每日用心準備")}</div>
+   <div class="product-bottom"><div class="price">${fmt(p.price)}</div>
+   <button class="btn ${p.is_available?"btn-primary":"btn-soft"} btn-small" ${p.is_available?"":"disabled"} onclick="addCart('${p.id}')">${!p.is_available?"已售完":"＋ 加入"}</button></div></article>`).join("");
+}
+function renderCart(){
+ $("cartCount").textContent=`${cartQty()} 件商品`;
+ $("cartTotal").textContent=fmt(cartAmount());$("cartModalTotal").textContent=fmt(cartAmount());
+ const entries=Object.entries(state.cart).filter(([id,q])=>q>0);
+ $("cartLines").innerHTML=entries.length?entries.map(([id,q])=>{const p=state.products.find(x=>x.id===id);return `<div class="cart-line"><div><div class="cart-name">${escapeHtml(p?.name||"商品")}</div><div class="cart-sub">${fmt(p?.price)}／個</div></div><div class="qty-control"><button onclick="changeQty('${id}',-1)" aria-label="減少">−</button><b>${q}</b><button onclick="changeQty('${id}',1)" aria-label="增加" ${p&&!p.is_available?"disabled":""}>＋</button></div><div class="line-subtotal">${fmt(Number(p?.price||0)*q)} <button class="btn btn-danger btn-small" onclick="removeCart('${id}')">移除</button></div></div>`}).join(""):'<p class="muted">購物車還是空的，挑選喜歡的口味吧！</p>';
+ $("submitOrder").disabled=!entries.length||entries.some(([id])=>{const p=state.products.find(x=>x.id===id);return !p||!p.is_available||!moneyReady(p)});
+}
+function addCart(id){const p=state.products.find(x=>x.id===id);if(!p||!p.is_available)return showToast("這個口味目前售完了。");state.cart[id]=(state.cart[id]||0)+1;renderCart();showToast(`已加入${p.name}`)}
+function changeQty(id,d){const p=state.products.find(x=>x.id===id),n=(state.cart[id]||0)+d;if(n<=0)delete state.cart[id];else if(p?.is_available)state.cart[id]=n;renderCart()}
+function removeCart(id){delete state.cart[id];renderCart()}
+function openCart(){$("cartModal").classList.remove("hidden");$("cartModal").style.display="flex";renderCart()}
+function closeCart(){$("cartModal").classList.add("hidden")}
+function beep(){if(!state.soundEnabled)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=880;g.gain.setValueAtTime(.13,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.35);o.start();o.stop(audioCtx.currentTime+.36)}catch(e){}}
+function normalizePhone(p){return String(p||"").replace(/[\s\-()]/g,"")}
+function validPhone(p){return /^[0-9+]{8,15}$/.test(normalizePhone(p))}
+function nextOrderNumber(phone){
+ const now=new Date(),md=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Taipei",month:"2-digit",day:"2-digit"}).format(now).replace("-","");
+ const today=taipeiDate(now),n=state.orders.filter(o=>o.created_date===today).length+1;
+ return `${md}-${String(n).padStart(3,"0")}（${normalizePhone(phone).slice(-3)}）`;
+}
+function makeId(){return "ord_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,9)}
+async function submitOrder(){
+ const entries=Object.entries(state.cart).filter(([id,q])=>q>0);if(!entries.length)return showToast("請先選擇商品。");
+ const phone=normalizePhone($("customerPhone").value);if(!validPhone(phone))return showToast("請輸入有效的電話號碼（8–15 位數字）。");
+ const invalid=entries.find(([id])=>{const p=state.products.find(x=>x.id===id);return !p||!p.is_available});if(invalid)return showToast("購物車內有售完商品，請重新確認。");
+ $("submitOrder").disabled=true;
+ try{
+  const now=new Date(),createdDate=taipeiDate(now);
+  const items=entries.map(([id,quantity])=>{const p=state.products.find(x=>x.id===id);return {product_id:id,product_name:p.name,name:p.name,quantity,unit_price:Number(p.price)}});
+  const total=items.reduce((sum,i)=>sum+i.quantity*i.unit_price,0);
+  const order={id:makeId(),order_number:nextOrderNumber(phone),phone,items,total_amount:total,payment_status:"unpaid",production_status:"waiting_payment",created_at:now.toISOString(),created_date:createdDate,cancel_reason:""};
+  state.orders.push(order);saveOrders();
+  $("successOrderNumber").textContent=order.order_number;
+  $("successOrderDetail").innerHTML=`訂單金額：<b>${fmt(total)}</b><br>付款方式：櫃檯現金<br>付款狀態：尚未付款`;
+  $("orderSuccessModal").classList.remove("hidden");$("orderSuccessModal").style.display="flex";
+  state.cart={};$("customerPhone").value="";closeCart();renderCart();
+ }catch(e){showToast("訂單未能儲存，請確認瀏覽器允許網站儲存資料。");console.error(e)}
+ finally{$("submitOrder").disabled=false}
+}
+function statusLabel(s){return ({unpaid:"未付款",paid:"已付款",payment_timeout:"付款逾時",cancelled:"已取消",waiting_payment:"等待付款",waiting_production:"等待製作",making:"製作中",ready:"等待取餐",completed:"已完成",refunded:"已退款"})[s]||s||"未知"}
+function statusClass(s){if(["paid","ready","completed"].includes(s))return"green";if(["cancelled","refunded"].includes(s))return"red";if(["payment_timeout","unpaid","waiting_production","waiting_payment"].includes(s))return"yellow";return""}
+function currentPaymentStatus(o){if(o.payment_status==="unpaid"&&o.created_at&&Date.now()-new Date(o.created_at).getTime()>=10*60*1000)return"payment_timeout";return o.payment_status}
+function orderItemText(o){return (o.items||[]).map(i=>`${escapeHtml(i.product_name||i.name||"商品")} × ${i.quantity}`).join("<br>")||"（沒有商品明細）"}
+function orderCard(o,admin=false){
+ const pay=currentPaymentStatus(o),prod=o.production_status||"waiting_payment";
+ const created=o.created_at?new Date(o.created_at).toLocaleString("zh-TW",{timeZone:"Asia/Taipei"}):"時間未提供";
+ const wait=o.created_at?Math.max(0,Math.floor((Date.now()-new Date(o.created_at).getTime())/60000)):0;
+ let actions="";
+ if(admin){
+  if(["unpaid","payment_timeout"].includes(pay))actions+=`<button class="btn btn-primary btn-small" onclick="adminAction('pay','${o.id}')">確認收款</button><button class="btn btn-danger btn-small" onclick="adminAction('cancel','${o.id}')">取消訂單</button>`;
+  if(pay==="paid"&&prod!=="completed"){
+   if(prod==="waiting_production")actions+=`<button class="btn btn-primary btn-small" onclick="adminAction('status','${o.id}','making')">開始製作</button>`;
+   if(prod==="making")actions+=`<button class="btn btn-primary btn-small" onclick="adminAction('status','${o.id}','ready')">製作完成／待取餐</button>`;
+   if(prod==="ready")actions+=`<button class="btn btn-primary btn-small" onclick="adminAction('status','${o.id}','completed')">完成取餐</button>`;
+  }
+ }
+ return `<article class="order-card"><div class="order-top"><div><div class="order-number">${escapeHtml(o.order_number||"未編號")}</div><div class="muted small">${escapeHtml(created)}</div></div><span class="status ${statusClass(pay)}">${statusLabel(pay)}</span></div>
+ ${admin&&o.phone?`<div class="small" style="margin-top:8px">電話：${escapeHtml(o.phone)}</div>`:""}
+ <div class="order-items">${orderItemText(o)}</div><div class="row"><span class="muted small">製作：${escapeHtml(statusLabel(prod))}</span><strong>${fmt(o.total_amount)}</strong></div>
+ ${admin&&["unpaid","payment_timeout"].includes(pay)?`<div class="muted small" style="margin-top:7px">已等待 ${wait} 分鐘${pay==="payment_timeout"?" · 請店家決定是否取消":""}</div>`:""}
+ ${actions?`<div class="order-actions">${actions}</div>`:""}</article>`;
+}
+function lookupOrder(){
+ const num=$("lookupOrderId").value.trim(),phone=normalizePhone($("lookupPhone").value);
+ if(!num||!validPhone(phone))return showToast("請輸入訂單編號及有效電話號碼。");
+ const o=state.orders.find(x=>String(x.order_number).toLowerCase()===num.toLowerCase()&&normalizePhone(x.phone)===phone);
+ if(!o){$("lookupResult").innerHTML='<div class="panel">查無訂單，或訂單編號與電話號碼不相符。請確認資料後再試。</div>';return}
+ const pay=currentPaymentStatus(o);
+ $("lookupResult").innerHTML=`<div class="panel"><div class="order-top"><div><h2 style="margin-bottom:5px">${escapeHtml(o.order_number)}</h2><div class="muted small">${new Date(o.created_at).toLocaleString("zh-TW",{timeZone:"Asia/Taipei"})}</div></div><span class="status ${statusClass(pay)}">${statusLabel(pay)}</span></div><div class="order-items">${orderItemText(o)}</div><div class="total-line"><span>訂單金額</span><span>${fmt(o.total_amount)}</span></div><p>製作狀態：${escapeHtml(statusLabel(o.production_status))}</p><p class="muted small">若尚未付款，請至櫃檯以現金付款。</p>${["unpaid","payment_timeout"].includes(pay)?`<button class="btn btn-danger" onclick="cancelCustomerOrder('${o.id}')">取消未付款訂單</button>`:""}</div>`;
+}
+function cancelCustomerOrder(id){
+ const o=state.orders.find(x=>x.id===id);if(!o||!["unpaid","payment_timeout"].includes(currentPaymentStatus(o)))return showToast("這筆訂單目前無法取消。");
+ if(!confirm("確定要取消這筆尚未付款的訂單嗎？"))return;
+ o.payment_status="cancelled";o.production_status="cancelled";o.cancel_reason="顧客自行取消";o.cancelled_at=new Date().toISOString();saveOrders();showToast("訂單已取消");lookupOrder();renderOrders();
+}
+function renderOrders(){
+ const q=$("orderSearch").value.trim().toLowerCase();
+ const arr=[...state.orders].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)).filter(o=>{
+  const p=currentPaymentStatus(o),match=!q||String(o.order_number||"").toLowerCase().includes(q)||String(o.phone||"").includes(q);
+  const filt=state.filter==="all"||(state.filter==="unpaid"&&["unpaid","payment_timeout"].includes(p))||(state.filter==="paid"&&["paid","refunded"].includes(p));
+  return match&&filt&&(state.filter==="all"||p!=="cancelled");
+ });
+ $("ordersList").innerHTML=arr.length?arr.map(o=>orderCard(o,true)).join(""):'<div class="panel muted">目前沒有符合條件的訂單。</div>';
+}
+function renderBoard(){
+ const arr=state.orders.filter(o=>o.payment_status==="paid"&&!["completed","cancelled"].includes(o.production_status)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ $("productionBoard").innerHTML=arr.length?arr.map(o=>orderCard(o,true)).join(""):'<div class="panel muted">目前沒有等待製作中的訂單。</div>';
+}
+function renderAdminProducts(){
+ $("adminProductList").innerHTML=state.products.map(p=>`<div class="cart-line"><div><b>${escapeHtml(p.name)}</b><div class="muted small">${fmt(p.price)}</div></div><span class="status ${p.is_available?"green":"red"}">${p.is_available?"供應中":"售完"}</span><button class="btn ${p.is_available?"btn-danger":"btn-primary"} btn-small" onclick="toggleProduct('${p.id}',${!p.is_available})">${p.is_available?"設為售完":"恢復供應"}</button></div>`).join("");
+}
+function renderReport(){
+ const date=$("reportDate").value||taipeiDate();
+ const day=state.orders.filter(o=>String(o.created_date||(o.created_at?taipeiDate(new Date(o.created_at)):""))===date);
+ const paid=day.filter(o=>o.payment_status==="paid");
+ const unpaid=day.filter(o=>["unpaid","payment_timeout"].includes(currentPaymentStatus(o)));
+ const cancelled=day.filter(o=>o.payment_status==="cancelled");
+ const cash=paid.reduce((s,o)=>s+Number(o.total_amount||0),0),avg=paid.length?cash/paid.length:0;
+ const metrics=[["總訂單數",day.length],["已付款訂單",paid.length],["未付款訂單",unpaid.length],["已取消訂單",cancelled.length],["實際收款金額",fmt(cash)],["平均已付款訂單",fmt(avg)]];
+ $("reportMetrics").innerHTML=metrics.map(([a,b])=>`<div class="metric"><span>${a}</span><strong>${b}</strong></div>`).join("");
+ const counts={};paid.forEach(o=>(o.items||[]).forEach(i=>{const name=i.product_name||i.name||"其他";counts[name]=(counts[name]||0)+Number(i.quantity||0)}));
+ $("flavorReport").innerHTML=`<div class="table-wrap"><table><thead><tr><th>口味</th><th>銷售數量</th></tr></thead><tbody>${state.products.map(p=>`<tr><td>${escapeHtml(p.name)}</td><td>${counts[p.name]||0}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function csvEscape(v){const s=String(v??"");return '"'+s.replace(/"/g,'""')+'"'}
+function exportReport(){
+ const date=$("reportDate").value||taipeiDate(),rows=[["日期","訂單編號","電話","付款狀態","製作狀態","商品明細","總金額"]];
+ state.orders.filter(o=>String(o.created_date||(o.created_at?taipeiDate(new Date(o.created_at)):""))===date).forEach(o=>rows.push([date,o.order_number,o.phone,currentPaymentStatus(o),o.production_status,(o.items||[]).map(i=>`${i.product_name||i.name} x${i.quantity}`).join("; "),o.total_amount]));
+ const csv="\uFEFF"+rows.map(r=>r.map(csvEscape).join(",")).join("\r\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=`呆一布訂單_${date}.csv`;a.click();URL.revokeObjectURL(url);
+}
+function adminAction(action,id,value){
+ const o=state.orders.find(x=>x.id===id);if(!o)return showToast("找不到這筆訂單。");
+ if(action==="pay"){
+  if(o.payment_status==="cancelled")return showToast("已取消的訂單不能確認收款。");
+  if(!["unpaid","payment_timeout"].includes(currentPaymentStatus(o)))return showToast("這筆訂單目前不能確認收款。");
+  if(!confirm("請確認已實際收到此筆訂單的現金。確認後將進入製作流程。"))return;
+  o.payment_status="paid";o.production_status="waiting_production";o.paid_at=new Date().toISOString();
+ }else if(action==="status"){
+  if(o.payment_status!=="paid")return showToast("必須先確認收款，才能開始製作。");
+  o.production_status=value;
+ }else if(action==="cancel"){
+  if(o.payment_status==="paid")return showToast("已付款訂單請先依店家退款流程處理，不可直接取消。");
+  if(!confirm("確定取消此訂單？系統會保留取消紀錄。"))return;
+  o.payment_status="cancelled";o.production_status="cancelled";o.cancel_reason="管理者取消";o.cancelled_at=new Date().toISOString();
+ }
+ saveOrders();renderOrders();renderBoard();renderReport();showToast("訂單狀態已更新");
+}
+function toggleProduct(id,available){const p=state.products.find(x=>x.id===id);if(!p)return;p.is_available=available;saveProducts();renderProducts();renderCart();renderAdminProducts();showToast(available?"已恢復供應":"已標記售完")}
+function login(){
+ const id=$("adminEmail").value.trim(),password=$("adminPassword").value;
+ if(id!==ADMIN_ID||password!==ADMIN_PASSWORD)return showToast("登入失敗，請檢查管理者 ID 與密碼。");
+ state.user={id:ADMIN_ID};sessionStorage.setItem(SESSION_KEY,"1");$("adminIdentity").textContent="管理者："+ADMIN_ID;
+ $("adminPassword").value="";showPage("adminPage");loadAdminData();showToast("登入成功");
+}
+function logout(){state.user=null;sessionStorage.removeItem(SESSION_KEY);showPage("customerPage");showToast("已登出管理後台")}
+function loadAdminData(){$("adminIdentity").textContent="管理者："+ADMIN_ID;renderOrders();renderBoard();renderAdminProducts();renderReport()}
+function setAdminTab(tab){
+ state.adminTab=tab;document.querySelectorAll("#adminTabs .tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+ ["orders","board","products","reports"].forEach(x=>$("admin"+x[0].toUpperCase()+x.slice(1)).classList.toggle("hidden",x!==tab));
+ if(tab==="reports")renderReport();
+}
+
+function backupData(){
+ const payload={app:"daiyibu-offline-order-system",version:1,exported_at:new Date().toISOString(),orders:state.orders,products:state.products};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=`呆一布備份_${taipeiDate()}.json`;a.click();URL.revokeObjectURL(url);showToast("備份檔已下載");
+}
+function restoreData(file){
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const data=JSON.parse(String(reader.result||""));
+   if(data.app!=="daiyibu-offline-order-system"||!Array.isArray(data.orders)||!Array.isArray(data.products))throw new Error("格式不符");
+   if(!confirm(`將匯入 ${data.orders.length} 筆訂單及 ${data.products.length} 種商品，並取代目前這台裝置的資料。確定繼續？`))return;
+   state.orders=data.orders;state.products=data.products;saveOrders();saveProducts();renderProducts();renderCart();loadAdminData();showToast("資料還原完成");
+  }catch(e){showToast("備份檔無法讀取，請選擇呆一布匯出的 JSON 備份。")}
+  finally{$("restoreFile").value=""}
+ };
+ reader.readAsText(file);
+}
+$("backupData").addEventListener("click",backupData);
+$("restoreFile").addEventListener("change",e=>restoreData(e.target.files?.[0]));
+
+$("cartFab").addEventListener("click",openCart);$("closeCart").addEventListener("click",closeCart);
+$("submitOrder").addEventListener("click",submitOrder);$("successClose").addEventListener("click",()=>{$("orderSuccessModal").classList.add("hidden");showPage("customerPage")});
+$("navLookup").addEventListener("click",()=>showPage("lookupPage"));$("navAdmin").addEventListener("click",()=>{if(state.user)showPage("adminPage");else showPage("adminLoginPage")});
+document.querySelectorAll("[data-back]").forEach(b=>b.addEventListener("click",()=>showPage("customerPage")));
+$("lookupSubmit").addEventListener("click",lookupOrder);$("loginButton").addEventListener("click",login);$("logoutButton").addEventListener("click",logout);
+$("refreshOrders").addEventListener("click",loadAdminData);$("orderSearch").addEventListener("input",renderOrders);$("exportCsv").addEventListener("click",exportReport);
+$("reportDate").value=taipeiDate();$("reportDate").addEventListener("change",renderReport);
+document.querySelectorAll("#orderFilter .tab").forEach(b=>b.addEventListener("click",()=>{state.filter=b.dataset.filter;document.querySelectorAll("#orderFilter .tab").forEach(x=>x.classList.toggle("active",x===b));renderOrders()}));
+document.querySelectorAll("#adminTabs .tab").forEach(b=>b.addEventListener("click",()=>setAdminTab(b.dataset.tab)));
+window.addEventListener("storage",e=>{if(e.key===STORAGE_KEY||e.key===PRODUCTS_KEY){state.orders=loadOrdersFromStorage();state.products=loadProductsFromStorage();renderProducts();renderCart();if(state.user)loadAdminData()}});
+setInterval(()=>{if(state.user){renderOrders();renderReport()}},30000);
+renderProducts();renderCart();
+if(state.user){showPage("adminPage");loadAdminData()}
+</script>
+</body>
+</html>
